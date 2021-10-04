@@ -3,6 +3,8 @@ package main;
 import com.CommunicationAdapter;
 import com.TerminalCom;
 import dash.Dashboard;
+import dash.JBTextButton;
+import dash.JBTextInput;
 import panel.PanelCommandHandler;
 
 import java.util.ArrayList;
@@ -18,6 +20,7 @@ public class Commander {
     private Dashboard panel = null;
 
     private HashMap<String, Object> elements = new HashMap<>();
+    private HashMap<String, Boolean> buttonStates = new HashMap<>();
 
     CommunicationAdapter com;
 
@@ -57,7 +60,6 @@ public class Commander {
                     console.println("[SYS] Custom Panel Size = " + width + "x" + height);
                 }
 
-                // Create the panel if it does exit
                 panel = new Dashboard(Dashboard.GENERIC, "Control Panel", width, height);
 
             } else {
@@ -69,6 +71,7 @@ public class Commander {
                 }
 
                 elements = new HashMap<>();
+                buttonStates = new HashMap<>();
             }
         } else if (line.charAt(0) == 'P') {
             // PUTS command, puts a number of chars on the terminal
@@ -111,6 +114,38 @@ public class Commander {
                 panel.remove(elements.get(args[1]));
                 elements.remove(args[1]);
             }
+
+            if (buttonStates.containsKey(args[1])) {
+                buttonStates.remove(args[1]);
+            }
+        } else if (line.charAt(0) == 'E') {
+            // EXAMINE command, returns a value from a specific element
+
+            if (args.length < 2) return;
+
+            if (elements.containsKey(args[1])) {
+                Object el = elements.get(args[1]);
+
+                if (el instanceof JBTextButton) {
+                    if (buttonStates.containsKey(args[1]) && buttonStates.get(args[1])) {
+                        com.sendCommand("1");
+                        buttonStates.replace(args[1], false);
+                    } else {
+                        com.sendCommand("0");
+                    }
+                } else if (el instanceof JBTextInput) {
+                    com.sendCommand(((JBTextInput) el).getContent());
+                } else {
+                    com.sendCommand("?");
+                }
+            } else {
+                com.sendCommand("?");
+            }
+        } else if (line.charAt(0) == 'U') {
+            // UPDATE command, updates an element on the dashboard
+            if (panel == null) return;
+
+            PanelCommandHandler.handleUpdateCommand(args, this);
         }
     }
 
@@ -136,6 +171,14 @@ public class Commander {
 
     public void setPanel(Dashboard panel) {
         this.panel = panel;
+    }
+
+    public HashMap<String, Boolean> getButtonStates() {
+        return buttonStates;
+    }
+
+    public void setButtonStates(HashMap<String, Boolean> buttonStates) {
+        this.buttonStates = buttonStates;
     }
 
     private int toInt(String in) {
