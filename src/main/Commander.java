@@ -1,10 +1,10 @@
 package main;
 
 import com.CommunicationAdapter;
+import com.NetworkCom;
 import com.TerminalCom;
-import dash.Dashboard;
-import dash.JBTextButton;
-import dash.JBTextInput;
+import dash.*;
+import graph.CyGraph;
 import panel.PanelCommandHandler;
 
 import java.util.ArrayList;
@@ -16,8 +16,13 @@ public class Commander {
     private static final int PANEL_HEIGHT_DEFAULT = 30;
 
     private Dashboard console;
-    private Dashboard scanner;
+    private Dashboard scanner = null;
     private Dashboard panel = null;
+
+    private JBImage scannerImage = null;
+    private boolean isFull = true;
+    private int maximum = 100;
+    private ArrayList<Integer> data = new ArrayList<>();
 
     private HashMap<String, Object> elements = new HashMap<>();
     private HashMap<String, Boolean> buttonStates = new HashMap<>();
@@ -25,12 +30,12 @@ public class Commander {
     CommunicationAdapter com;
 
     public Commander() {
-        console = new Dashboard(Dashboard.CONSOLE, "Terminal", 80, 24);
+        console = new Dashboard(Dashboard.CONSOLE, "Terminal", 80, 24, ResourceLoader.getImage("/icon.png"));
         console.dashboardExitOnClose();
 
         console.println("[SYS] CyRIAL Commander V1.0\n[SYS] Written by Gavin Tersteeg, 2021");
 
-        com = new TerminalCom(this);
+        com = new NetworkCom(this);
         com.startLineHandler();
 
 
@@ -60,7 +65,7 @@ public class Commander {
                     console.println("[SYS] Custom Panel Size = " + width + "x" + height);
                 }
 
-                panel = new Dashboard(Dashboard.GENERIC, "Control Panel", width, height);
+                panel = new Dashboard(Dashboard.GENERIC, "Control Panel", width, height, ResourceLoader.getImage("/icon.png"));
 
             } else {
                 console.println("[SYS] Cleaning Control Panel...");
@@ -146,6 +151,34 @@ public class Commander {
             if (panel == null) return;
 
             PanelCommandHandler.handleUpdateCommand(args, this);
+        } else if (line.charAt(0) == 'S') {
+            if (scanner == null) {
+                scanner = new Dashboard(Dashboard.GENERIC, "Radial Graph", 30, 30, ResourceLoader.getImage("/icon.png"));
+
+            }
+
+            if (scannerImage == null) {
+                scannerImage = new JBImage(CyGraph.graph(new int[]{0}, 100, 360), 0, 0, 30, 30);
+                scanner.add(scannerImage);
+            }
+
+            if (args.length < 2) return;
+
+            if (args[1].equals("H")) {
+                data.removeAll(data);
+                isFull = false;
+            } else if (args[1].equals("F")) {
+                data.removeAll(data);
+                isFull = true;
+            } else if (args[1].equals("M")) {
+                if (args.length < 3) return;
+                maximum = toInt(args[2]);
+            } else if (args[1].equals("X")) {
+                scannerImage.setImage(CyGraph.graph(data.stream().mapToInt(i -> i).toArray(), maximum, (isFull ? 360 : 180)));
+                scannerImage.update();
+            } else {
+                data.add(toInt(args[1]));
+            }
         }
     }
 
