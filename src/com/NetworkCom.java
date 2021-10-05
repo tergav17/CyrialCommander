@@ -35,7 +35,7 @@ public class NetworkCom extends CommunicationAdapter{
             sockIn = new BufferedReader(new InputStreamReader(sock.getInputStream()));
             sockOut = new PrintWriter(sock.getOutputStream(), true);
         } catch (IOException e) {
-            cmd.getConsole().println("[COM] General IO Failure, Cannot Connect!");
+            cmd.getConsole().println("[COM] General IO failure, cannot connect!");
             return false;
         }
 
@@ -46,7 +46,7 @@ public class NetworkCom extends CommunicationAdapter{
     public String readCommand() {
         while (true) {
             try {
-                cmd.getConsole().println(sockIn.readLine());
+                cmd.issueCommand(sockIn.readLine());
             } catch (IOException e) {
                 cmd.getConsole().println("Failed read!");
             }
@@ -57,6 +57,6 @@ public class NetworkCom extends CommunicationAdapter{
 
     @Override
     public void sendCommand(String in) {
-
+        sockOut.println(in);
     }
 }
