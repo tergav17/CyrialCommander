@@ -52,4 +52,11 @@ void dash_icon_update(char* name, char* status);
 void dash_logger_bound(char* name, double min, double max);
 void dash_logger_log(char* name, double value, char* color);
 
+void dash_plotter_erase(char* name);
+void dash_plotter_linear(char* name);
+void dash_plotter_nonlinear(char* name);
+void dash_plotter_color(char* name, char* color);
+void dash_plotter_bound(char* name, double xmin, double xmax, double ymin, double ymax);
+void dash_plotter_plot(char* name, double x, double y);
+
 #endif /* CYRIAL_H_ */

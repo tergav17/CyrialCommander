@@ -190,5 +190,44 @@ void dash_logger_log(char* name, double value, char* color) {
     uart_sendln(buf);
 }
 
+void dash_plotter_erase(char* name) {
+    char buf[32];
 
+    sprintf(buf, "U,%s,E", name);
+    uart_sendln(buf);
+}
 
+void dash_plotter_linear(char* name) {
+    char buf[32];
+
+    sprintf(buf, "U,%s,L", name);
+    uart_sendln(buf);
+}
+
+void dash_plotter_nonlinear(char* name) {
+    char buf[32];
+
+    sprintf(buf, "U,%s,N", name);
+    uart_sendln(buf);
+}
+
+void dash_plotter_color(char* name, char* color) {
+    char buf[64];
+
+    sprintf(buf, "U,%s,C,%s", name, color);
+    uart_sendln(buf);
+}
+
+void dash_plotter_bound(char* name, double xmin, double xmax, double ymin, double ymax) {
+    char buf[64];
+
+    sprintf(buf, "U,%s,B,%.3f,%.3f,%.3f,%.3f", name, xmin, xmax, ymin, ymax);
+    uart_sendln(buf);
+}
+
+void dash_plotter_plot(char* name, double x, double y) {
+    char buf[64];
+
+    sprintf(buf, "U,%s,%.3f,%.3f", name, x, y);
+    uart_sendln(buf);
+}
