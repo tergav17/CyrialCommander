@@ -17,6 +17,8 @@ public class CyGraph {
      * @param degrees # of degrees to graph
      */
     public static BufferedImage graph(int[] data, int high, int degrees) {
+        int offset = (degrees > 180) ? 90 : 0;
+
         BufferedImage b = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D g = b.createGraphics();
@@ -33,12 +35,12 @@ public class CyGraph {
 
         g.setColor(Color.DARK_GRAY);
 
-        int lastX = radX(RADIUS, 0) + midX;
-        int lastY = radY(RADIUS, 0) + midY;
+        int lastX = radX(RADIUS, offset) + midX;
+        int lastY = radY(RADIUS, offset) + midY;
 
         for (int i = 0; i < degrees; i++) {
-            int newX = radX(RADIUS, i) + midX;
-            int newY = radY(RADIUS, i) + midY;
+            int newX = radX(RADIUS, i+offset) + midX;
+            int newY = radY(RADIUS, i+offset) + midY;
 
             g.drawLine(lastX, lastY, newX, newY);
 
@@ -48,16 +50,16 @@ public class CyGraph {
 
         g.setColor(Color.RED);
 
-        lastX = radX((int) (RADIUS * bound(data[0], high)), 0) + midX;
-        lastY = radY((int) (RADIUS * bound(data[0], high)), 0) + midY;
+        lastX = radX((int) (RADIUS * bound(data[0], high)), offset) + midX;
+        lastY = radY((int) (RADIUS * bound(data[0], high)), offset) + midY;
 
         for (int i = 0; i < degrees; i++) {
 
             int di = (int) ((i / (degrees * 1.0)) * data.length);
             if (di >= data.length) di = data.length - 1;
 
-            int newX = radX((int) (RADIUS * bound(data[di], high)), i) + midX;
-            int newY = radY((int) (RADIUS * bound(data[di], high)), i) + midY;
+            int newX = radX((int) (RADIUS * bound(data[di], high)), i+offset) + midX;
+            int newY = radY((int) (RADIUS * bound(data[di], high)), i+offset) + midY;
 
             g.drawLine(lastX, lastY, newX, newY);
 
