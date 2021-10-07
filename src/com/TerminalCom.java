@@ -30,4 +30,9 @@ public class TerminalCom extends CommunicationAdapter{
     public void sendCommand(String in) {
         System.out.println("'" + in + "'");
     }
+
+    @Override
+    public void reset() {
+
+    }
 }

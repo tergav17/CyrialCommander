@@ -37,4 +37,5 @@ public abstract class CommunicationAdapter {
 
     public abstract String readCommand();
     public abstract void sendCommand(String in);
+    public abstract  void reset();
 }

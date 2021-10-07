@@ -59,4 +59,9 @@ public class NetworkCom extends CommunicationAdapter{
     public void sendCommand(String in) {
         sockOut.println(in);
     }
+
+    @Override
+    public void reset() {
+        sockOut.flush();
+    }
 }

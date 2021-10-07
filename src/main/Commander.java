@@ -51,6 +51,7 @@ public class Commander {
             // INIT command, clear dashboards and prepare special structures
             console.println("[SYS] INIT Detected, Resetting...");
 
+            com.reset();
 
             if (panel == null) {
                 console.println("[SYS] Creating Control Panel...");

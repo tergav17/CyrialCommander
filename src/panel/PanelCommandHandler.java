@@ -34,8 +34,8 @@ public class PanelCommandHandler {
                 if (args[2].equals("B")) {
                     if (args.length < 5) return;
 
-                    log.getGraph().setXMin(toDouble(args[3]));
-                    log.getGraph().setXMax(toDouble(args[4])) ;
+                    log.getGraph().setYMin(toDouble(args[3]));
+                    log.getGraph().setYMax(toDouble(args[4])) ;
                 } else log.addTracker(toDouble(args[2]), toColor(args[3]));
 
             } else if (e instanceof JBPlotter) {
